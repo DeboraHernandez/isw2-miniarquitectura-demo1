@@ -77,3 +77,26 @@ test("procesar cumple con la estructura minima del JSON", () => {
   assert.equal(typeof res.body.longitud, "number");
 });
 
+test("procesar falla cuando nombre es 'error'", () => {
+  const req = { query: { nombre: "error" } };
+
+  const res = {
+    statusCode: null,
+    body: null,
+    status(code) {
+      this.statusCode = code;
+      return this;
+    },
+    json(payload) {
+      this.body = payload;
+      return this;
+    }
+  };
+
+  handler(req, res);
+
+  assert.equal(res.statusCode, 500);
+  assert.ok(res.body.error);
+  assert.equal(typeof res.body.error, "string");
+});
+
